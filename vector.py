@@ -10,7 +10,7 @@ class Vector2(object):
     Aqui iremos fazer o polimorfismo através da sobreposição de alguns métodos mágicos 
     para introduzir as operações  vetoriais
     '''
-    
+
     def __add__(self, other):
             return Vector2(self.x + other.x, self.y + other.y)
 
@@ -24,10 +24,8 @@ class Vector2(object):
         return Vector2(self.x * scalar, self.y * scalar)
 
     def __div__(self, scalar):
-        # trabalho original
-        #if scalar != 0:
-
-        # nossa implementação
+        #if scalar != 0: (como era antes)
+        # como está agora com o tratamento de erros
         try:
             V = Vector2(self.x / float(scalar), self.y / float(scalar))
             return V

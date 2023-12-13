@@ -76,24 +76,24 @@ class GameController(object):
         self.setBackground() #Ao iniciar o jogo, constroi o fundo
         self.nodes = NodeGroup("maze/maze1.txt") #Instancia objeto da classe NodeGroup
         self.nodes.setPortalPair((0,17), (27,17))
-        homekey = self.nodes.createHomeNodes(11.5, 14)
-        self.nodes.connectHomeNodes(homekey, (12,14), LEFT)
-        self.nodes.connectHomeNodes(homekey, (15,14), RIGHT)
+        homekey = self.nodes.createHomeNodes(11.5, 14) #Colhe a chave do nodo acima da casa
+        self.nodes.connectHomeNodes(homekey, (12,14), LEFT) #Coneta o nodo da casa à ESQUERDA
+        self.nodes.connectHomeNodes(homekey, (15,14), RIGHT) #Conecta o nodo da casa à DIREITA
         self.pacman = Pacman(self.nodes.getNodeFromTiles(15, 26)) #Instancia objeto Pacman
-        self.pellets = PelletGroup("maze/maze1.txt")
-        self.ghosts = GhostGroup(self.nodes.getStartTempNode(), self.pacman)
-        self.ghosts.blinky.setStartNode(self.nodes.getNodeFromTiles(2+11.5, 0+14))
-        self.ghosts.pinky.setStartNode(self.nodes.getNodeFromTiles(2+11.5, 3+14))
-        self.ghosts.inky.setStartNode(self.nodes.getNodeFromTiles(0+11.5, 3+14))
-        self.ghosts.clyde.setStartNode(self.nodes.getNodeFromTiles(4+11.5, 3+14))
-        self.ghosts.setSpawnNode(self.nodes.getNodeFromTiles(2+11.5, 3+14))
-        self.nodes.denyHomeAccess(self.pacman)
-        self.nodes.denyHomeAccessList(self.ghosts)
-        self.nodes.denyAccessList(2+11.5, 3+14, LEFT, self.ghosts)
-        self.nodes.denyAccessList(2+11.5, 3+14, RIGHT, self.ghosts)
-        self.ghosts.inky.startNode.denyAccess(RIGHT, self.ghosts.inky)
-        self.ghosts.clyde.startNode.denyAccess(LEFT, self.ghosts.clyde)
-        self.nodes.denyAccessList(12, 14, UP, self.ghosts)
+        self.pellets = PelletGroup("maze/maze1.txt") #Instancia o grupo de pastilhas
+        self.ghosts = GhostGroup(self.nodes.getStartTempNode(), self.pacman) #Instancia o grupo de fantasmas
+        self.ghosts.blinky.setStartNode(self.nodes.getNodeFromTiles(2+11.5, 0+14)) #Posição inicial do Blinky
+        self.ghosts.pinky.setStartNode(self.nodes.getNodeFromTiles(2+11.5, 3+14)) #Posição inicial do Pinky
+        self.ghosts.inky.setStartNode(self.nodes.getNodeFromTiles(0+11.5, 3+14)) #Posição inicial do Inky
+        self.ghosts.clyde.setStartNode(self.nodes.getNodeFromTiles(4+11.5, 3+14)) #Posição inicial do Clyde
+        self.ghosts.setSpawnNode(self.nodes.getNodeFromTiles(2+11.5, 3+14)) #Definir a posição de origem
+        self.nodes.denyHomeAccess(self.pacman) #Negar o acesso à casa
+        self.nodes.denyHomeAccessList(self.ghosts) #Lista de entidades com acesso negado à casa
+        self.nodes.denyAccessList(2+11.5, 3+14, LEFT, self.ghosts) #Acessar o nodo de entrada da casa pela ESQUERDA
+        self.nodes.denyAccessList(2+11.5, 3+14, RIGHT, self.ghosts) #Acessar o nodo de entrada da casa pela DIREITA
+        self.ghosts.inky.startNode.denyAccess(RIGHT, self.ghosts.inky) #Negar o acesso da saída ao Inky
+        self.ghosts.clyde.startNode.denyAccess(LEFT, self.ghosts.clyde) #Negar o acesso da saída ao Clyde
+        self.nodes.denyAccessList(12, 14, UP, self.ghosts) 
         self.nodes.denyAccessList(15, 14, UP, self.ghosts)
         self.nodes.denyAccessList(12, 26, UP, self.ghosts)
         self.nodes.denyAccessList(15, 26, UP, self.ghosts)
@@ -102,14 +102,14 @@ class GameController(object):
     def update(self): #Será chamado a cada quadro do jogo (game loop)
         dt = self.clock.tick(30) / 1000.0 #Quanto tempo passou desde a última vez que este método foi chamado
         self.textgroup.update(dt)
-        self.pellets.update(dt)
+        self.pellets.update(dt) #Atualizar as pastilhas
         if not self.pause.paused:
-            self.ghosts.update(dt)
+            self.ghosts.update(dt) #Atualiza as disposições do fantasma
             if self.fruit is not None:
                 self.fruit.update(dt)
-            self.checkPelletEvents()
-            self.checkGhostEvents()
-            self.checkFruitEvents()
+            self.checkPelletEvents() #Checar os eventos de colisões com a pastilha
+            self.checkGhostEvents() #Checar os eventos de colisões com os fantasmas
+            self.checkFruitEvents() #Checar os eventos de colisões com as frutas
 
         if self.pacman.alive:
             if not self.pause.paused:
@@ -159,42 +159,42 @@ class GameController(object):
         for event in pygame.event.get():
             if event.type == QUIT: #Se apertar o 'X' da tela, sair
                 exit()
-            elif event.type == KEYDOWN:
-                if event.key == K_SPACE:
-                    if self.flashBG == False:
-                        if self.pacman.alive:
-                            self.pause.setPause(playerPaused=True)
-                            if not self.pause.paused:
+            elif event.type == KEYDOWN: 
+                if event.key == K_SPACE: #Checa se o espaço foi apertado
+                    if self.flashBG == False: #A pausa só ocorrerá se a tela não estiver piscando
+                        if self.pacman.alive: 
+                            self.pause.setPause(playerPaused=True) #Pausa ou despausa o jogo!
+                            if not self.pause.paused: #Se não está pausado, não mostra textos extras e mostra as entidades
                                 self.textgroup.hideText()
                                 self.showEntities()
-                            else:
-                                self.textgroup.showText(PAUSETXT)
+                            else: #se está pausado, mostra PAUSED! e esconde as entidades
+                                self.textgroup.showText(PAUSETXT) 
                                 self.hideEntities()
 
     def checkGhostEvents(self):
         for ghost in self.ghosts:
-            if self.pacman.collideGhost(ghost):
-               if ghost.mode.current is FREIGHT:
-                    self.pacman.visible = False
+            if self.pacman.collideGhost(ghost): #Checa se o Pacman colidiu com um fantasma
+               if ghost.mode.current is FREIGHT: #Se o fantasma estiver no modo Freight, então o Pacman irá comê-lo
+                    self.pacman.visible = False #Esconde o sprite do Pacman e do fantasma
                     ghost.visible = False
-                    self.updateScore(ghost.points)
-                    self.textgroup.addText(str(ghost.points), WHITE, ghost.position.x, ghost.position.y, 8, time=1)
-                    self.ghosts.updatePoints()
-                    self.pause.setPause(pauseTime=1, func=self.showEntities)
-                    ghost.startSpawn()
-                    self.nodes.allowHomeAccess(ghost)
+                    self.updateScore(ghost.points) #Incrementa os pontos dos fantasmas
+                    self.textgroup.addText(str(ghost.points), WHITE, ghost.position.x, ghost.position.y, 8, time=1) #Mostra os pontos adquiridos
+                    self.ghosts.updatePoints() #Atualiza os pontos
+                    self.pause.setPause(pauseTime=1, func=self.showEntities) #Pausa por um segundo o jogo
+                    ghost.startSpawn() #Inicia o modo Spawn
+                    self.nodes.allowHomeAccess(ghost) #Permite o acesso do fantasma à casa
                     
-               elif ghost.mode.current is not SPAWN:
+               elif ghost.mode.current is not SPAWN: #Se estiver no Scatter ou Chase, então Pacman morreu!
                     if self.pacman.alive:
-                        self.lives -=  1
-                        self.lifesprites.removeImage()
-                        self.pacman.die()
-                        self.ghosts.hide()
-                        if self.lives <= 0:
+                        self.lives -=  1 #Perde vida
+                        self.lifesprites.removeImage() #Remove uma vida
+                        self.pacman.die() #Animação da morte do Pacman
+                        self.ghosts.hide() #esconde os fantasmas
+                        if self.lives <= 0: #Se não houver mais vida
                            self.textgroup.showText(GAMEOVERTXT)
-                           self.pause.setPause(pauseTime=3, func=self.restartGame)
+                           self.pause.setPause(pauseTime=3, func=self.restartGame) #Reinicia o jogo!
                         else:
-                           self.pause.setPause(pauseTime=3, func=self.resetLevel)
+                           self.pause.setPause(pauseTime=3, func=self.resetLevel) #Reseta a posição do Pacman e dos fantasmas
 
     def showEntities(self):
         self.pacman.visible = True

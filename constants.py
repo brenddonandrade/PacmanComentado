@@ -39,18 +39,18 @@ INKY = 6 #ID do Inky
 CLYDE = 7 #ID do Clyde
 FRUIT = 8 #ID das frutas
 
-
+#Identificação dos portais
 
 PORTAL = 3
 
+#Identificação dos Modos dos fantasmas
 
 SCATTER = 0
 CHASE = 1
 FREIGHT = 2
 SPAWN = 3
 
-
-
+#Identificação dos objetos de texto
 
 SCORETXT = 0
 LEVELTXT = 1

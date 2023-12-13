@@ -21,7 +21,7 @@ class Entity(object):
         self.visible = True
         self.disablePortal = False
         self.goal = None
-        self.directionMethod = self.randomDirection
+        self.directionMethod = self.randomDirection #Variável que guarda o método que será utilizado para definir o movimento
         self.setStartNode(node)
         self.image = None
 
@@ -68,7 +68,7 @@ class Entity(object):
         return False
 
     def setSpeed(self, speed):
-        self.speed = speed * TILEWIDTH / 16
+        self.speed = speed * TILEWIDTH / 16 #Usa o TILEWIDTH para a velocidade ficar proporcional ao tamanho da tela
 
     def render(self, screen):
         if self.visible:
@@ -98,25 +98,25 @@ class Entity(object):
 
             self.setPosition() #Atualiza o nódo atual
 
-    def validDirections(self):
+    def validDirections(self): #Retorna uma lista com as direções válidas da entity
         directions = []
         for key in [UP, DOWN, LEFT, RIGHT]:
-            if self.validDirection(key):
-                if key != self.direction * -1:
+            if self.validDirection(key): #Testa para cada direção
+                if key != self.direction * -1: #Não pode reverter!
                     directions.append(key)
         if len(directions) == 0:
-            directions.append(self.direction * -1)
+            directions.append(self.direction * -1) #Se não houver outra direção, reverte
         return directions
 
     def randomDirection(self, directions):
-        return directions[randint(0, len(directions)-1)]
+        return directions[randint(0, len(directions)-1)] #Utiliza a lista directions
 
     def goalDirection(self, directions):
         distances = []
         for direction in directions:
-            vec = self.node.position  + self.directions[direction]*TILEWIDTH - self.goal
-            distances.append(vec.magnitudeSquared())
-        index = distances.index(min(distances))
+            vec = self.node.position  + self.directions[direction]*TILEWIDTH - self.goal #Distância entre a posição e o destino
+            distances.append(vec.magnitudeSquared()) #Inclui na lista
+        index = distances.index(min(distances)) #Escolhe o índice que representa a menor distância
         return directions[index]
 
     def setBetweenNodes(self, direction):

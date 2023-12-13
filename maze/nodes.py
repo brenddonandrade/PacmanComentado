@@ -1,7 +1,7 @@
 import pygame
 from vector import Vector2
 from constants import *
-import numpy as np
+import numpy as np #Para manipular matrizes
 
 class Node(object): #Esta classe descreve apenas um nódo!
     def __init__(self, x, y):
@@ -30,28 +30,28 @@ class Node(object): #Esta classe descreve apenas um nódo!
 
 class NodeGroup(object): #Esta classe arranja todos os nódos do jogo!
     def __init__(self, level):
-        self.level = level
-        self.nodesLUT = {}
-        self.nodeSymbols = ['+', 'P', 'n']
-        self.pathSymbols = ['.', '-', '|', 'p']
+        self.level = level #Para identificar cada labirinto
+        self.nodesLUT = {} #Armazenará todos os nódos
+        self.nodeSymbols = ['+', 'P', 'n'] #Símbolos que representam nódos no .txt
+        self.pathSymbols = ['.', '-', '|', 'p'] #Símbolos que representam linhas no .txt
         data = self.readMazeFile(level)
         self.createNodeTable(data)
         self.connectHorizontally(data)
         self.connectVertically(data)
         self.homekey = None
 
+    def readMazeFile(self, textfile): #Retorna array 2d
+        return np.loadtxt(textfile, dtype='<U1') #Usa o numpy para ler a matriz '<U1' para caracteres
+    
     def render(self, screen):
         for node in self.nodesLUT.values():
             node.render(screen)
-
-    def readMazeFile(self, textfile):
-        return np.loadtxt(textfile, dtype='<U1')
 
     def createNodeTable(self, data, xoffset=0, yoffset=0):
         for row in list(range(data.shape[0])):
             for col in list(range(data.shape[1])):
                 if data[row][col] in self.nodeSymbols:
-                    x, y = self.constructKey(col+xoffset, row+yoffset)
+                    x, y = self.constructKey(col+xoffset, row+yoffset) #Constroi os nódos
                     self.nodesLUT[(x, y)] = Node(x, y)
 
     def constructKey(self, x, y):

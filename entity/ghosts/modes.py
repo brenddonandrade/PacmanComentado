@@ -3,15 +3,15 @@ from constants import *
 class MainMode(object):
     def __init__(self):
         self.timer = 0
-        self.scatter()
+        self.scatter() #Inicia no modo Scatter
 
     def update(self, dt):
-        self.timer += dt
-        if self.timer >= self.time:
+        self.timer += dt 
+        if self.timer >= self.time: #Testa o tempo para cada modo
             if self.mode is SCATTER:
-                self.chase()
+                self.chase() #Troca para Chase
             elif self.mode is CHASE:
-                self.scatter()
+                self.scatter() #Troca para Scatter
 
     def scatter(self):
         self.mode = SCATTER
@@ -27,24 +27,24 @@ class ModeController(object):
     def __init__(self, entity):
         self.timer = 0
         self.time = None
-        self.mainmode = MainMode()
-        self.current = self.mainmode.mode
-        self.entity = entity
+        self.mainmode = MainMode() #Para controlar a alteração dos modos
+        self.current = self.mainmode.mode #Guarda o modo atual
+        self.entity = entity #Instancia objeto que deseja controlar
 
     def update(self, dt):
-        self.mainmode.update(dt)
-        if self.current is FREIGHT:
+        self.mainmode.update(dt) #Sobreposição do update do MainMode
+        if self.current is FREIGHT: 
             self.timer += dt
-            if self.timer >= self.time:
-                self.time = None
-                self.entity.normalMode()
-                self.current = self.mainmode.mode
+            if self.timer >= self.time: #Se o Freight terminou:
+                self.time = None #Reseta o tempo
+                self.entity.normalMode() #Volta para o modo normal
+                self.current = self.mainmode.mode #Volta para SCATTER ou CHASE
         elif self.current in [SCATTER, CHASE]:
-            self.current = self.mainmode.mode
+            self.current = self.mainmode.mode #Atualiza o modo
         if self.current is SPAWN:
-            if self.entity.node == self.entity.spawnNode:
-                self.entity.normalMode()
-                self.current = self.mainmode.mode
+            if self.entity.node == self.entity.spawnNode: #Se já chegou à Home:
+                self.entity.normalMode() #Volta para o modo normal
+                self.current = self.mainmode.mode #SCATTER ou CHASE
 
     def setFreightMode(self):
         if self.current in [SCATTER, CHASE]:

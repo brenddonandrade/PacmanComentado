@@ -1,5 +1,5 @@
 class Pause(object):
-    def __init__(self, paused=False):
+    def __init__(self, paused=False): 
         self.paused = paused
         self.timer = 0
         self.pauseTime = None
@@ -8,14 +8,14 @@ class Pause(object):
     def update(self, dt):
         if self.pauseTime is not None:
             self.timer += dt
-            if self.timer >= self.pauseTime:
+            if self.timer >= self.pauseTime: 
                 self.timer = 0
                 self.paused = False
                 self.pauseTime = None
                 return self.func
         return None
 
-    def setPause(self, playerPaused=False, pauseTime=None, func=None):
+    def setPause(self, playerPaused=False, pauseTime=None, func=None): #func é uma função para utilizar durante a pausa
         self.timer = 0
         self.func = func
         self.pauseTime = pauseTime

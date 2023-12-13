@@ -13,7 +13,7 @@ class Animator(object):
         self.current_frame = 0
         self.finished = False
 
-    def update(self, dt):
+    def update(self, dt): #Testa para ver se terminou a animação, ou se deve continuar
         if not self.finished:
             self.nextFrame(dt)
         if self.current_frame == len(self.frames):

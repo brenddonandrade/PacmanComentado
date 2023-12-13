@@ -17,13 +17,13 @@ class Text(object):
         self.setupFont("text/PressStart2P-Regular.ttf")
         self.createLabel()
 
-    def setupFont(self, fontpath):
+    def setupFont(self, fontpath): #Fonte do texto
         self.font = pygame.font.Font(fontpath, self.size)
 
-    def createLabel(self):
+    def createLabel(self): #Imprime o texto
         self.label = self.font.render(self.text, 1, self.color)
 
-    def setText(self, newtext):
+    def setText(self, newtext): #Define o texto
         self.text = str(newtext)
         self.createLabel()
 
@@ -40,22 +40,22 @@ class Text(object):
             x, y = self.position.asTuple()
             screen.blit(self.label, (x, y))
 
-class TextGroup(object):
+class TextGroup(object): #Organiza todos os textos criados
     def __init__(self):
         self.nextid = 10
         self.alltext = {}
         self.setupText()
         self.showText(READYTXT)
 
-    def addText(self, text, color, x, y, size, time=None, id=None):
+    def addText(self, text, color, x, y, size, time=None, id=None): #Adiciona o texto
         self.nextid += 1
         self.alltext[self.nextid] = Text(text, color, x, y, size, time=time, id=id)
         return self.nextid
 
-    def removeText(self, id):
+    def removeText(self, id): #Remove o texto
         self.alltext.pop(id)
         
-    def setupText(self):
+    def setupText(self): #Define como os textos irão aparecer
         size = TILEHEIGHT
         self.alltext[SCORETXT] = Text("0".zfill(8), WHITE, 0, TILEHEIGHT, size)
         self.alltext[LEVELTXT] = Text(str(1).zfill(3), WHITE, 23*TILEWIDTH, TILEHEIGHT, size)
@@ -71,25 +71,25 @@ class TextGroup(object):
             if self.alltext[tkey].destroy:
                 self.removeText(tkey)
 
-    def showText(self, id):
+    def showText(self, id): #Mostra o texto
         self.hideText()
         self.alltext[id].visible = True
 
-    def hideText(self):
+    def hideText(self): #Esconde o texto
         self.alltext[READYTXT].visible = False
         self.alltext[PAUSETXT].visible = False
         self.alltext[GAMEOVERTXT].visible = False
 
-    def updateScore(self, score):
+    def updateScore(self, score): #Texto da pontuação
         self.updateText(SCORETXT, str(score).zfill(8))
 
-    def updateLevel(self, level):
+    def updateLevel(self, level): #Texto do nível
         self.updateText(LEVELTXT, str(level + 1).zfill(3))
 
-    def updateText(self, id, value):
+    def updateText(self, id, value): #Atualiza o texto
         if id in self.alltext.keys():
             self.alltext[id].setText(value)
 
-    def render(self, screen):
+    def render(self, screen): #Desenha na tela
         for tkey in list(self.alltext.keys()):
             self.alltext[tkey].render(screen)

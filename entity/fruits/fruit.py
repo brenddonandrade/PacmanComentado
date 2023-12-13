@@ -12,10 +12,10 @@ class Fruit(Entity):
         self.timer = 0
         self.destroy = False
         self.points = 100 + level*20
-        self.setBetweenNodes(RIGHT)
+        self.setBetweenNodes(RIGHT) #Entre os nodos
         self.sprites = FruitSprites(self, level)
 
     def update(self, dt):
         self.timer += dt
-        if self.timer >= self.lifespan:
+        if self.timer >= self.lifespan: #Destruir caso o time exceder o timer
             self.destroy = True
